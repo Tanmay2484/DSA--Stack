@@ -1,0 +1,46 @@
+/* 907. Sum of Subarray Minimums
+   Link : https://leetcode.com/problems/sum-of-subarray-minimums/description/
+*/
+class Solution {
+public:
+    vector<int> f(vector<int>&arr){
+        stack<int>st;
+        vector<int>res;
+        for(int i=0;i<arr.size();i++){
+            while(st.size()>0 and arr[st.top()]>=arr[i])
+                st.pop();
+            if(st.size()==0) res.push_back(-1);
+            else res.push_back(st.top());
+            st.push(i);
+        }
+        return res;
+    }
+    
+    vector<int> fn(vector<int>&arr){
+        stack<int>st;
+        vector<int>res(arr.size());
+        for(int i=arr.size()-1;i>=0;i--){
+            while(st.size()>0 and arr[st.top()]>arr[i])
+                st.pop();
+            if(st.size()==0) res.push_back(arr.size());
+            else res.push_back(st.top());
+            st.push(i);
+        }
+        reverse(res.begin(),res.end());
+        return res;
+    }
+    
+    int sumSubarrayMins(vector<int>& arr) {
+        auto a=f(arr);
+        auto b=fn(arr);
+        int mod=1e9+7;
+        long res=0;
+        for(int i=0;i<arr.size();i++){
+            int left=i-a[i];
+            int right=b[i]-i;
+            res+=(1LL*((left*right)%mod)*arr[i])%mod;
+            res%=mod;
+        }
+        return res;
+    }
+};
